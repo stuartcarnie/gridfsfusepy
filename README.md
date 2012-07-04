@@ -3,9 +3,17 @@ gridfsfusepy
 A FUSE filesystem for GridFS written in Python using the excellent [fusepy](https://github.com/terencehonles/fusepy) 
 bindings.
 
+About
+-----
+[gridfsfusepy](http://github.com/scarnie/gridfsfusepy) was written by [Stuart Carnie](http://github/scarnie).  
+
+You can find him loitering the internets
+
+* [Blog](http://aussiebloke.blogspot.com)
+* [Twitter](http://twitter.com/stuartcarnie)
+
 Features
 --------
-
 * Read/only, though read/write is planned next
 * Folder support
   * gridfsfusepy will parse out the `filename` property, to create a directory structure by splitting forward slashes (`/`) 

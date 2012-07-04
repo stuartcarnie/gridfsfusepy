@@ -44,3 +44,10 @@ gridfsfusepy and fusepy has been tested with [FUSE for OSX](http://osxfuse.githu
 ### Linux
 There is no reason gridfsfusepy shouldn't work on various Linux distros.  I'll update this space when it is confirmed.
 
+Changelog
+---------
+
+**0.1.0**: Initial release
+
+* Read-only support
+* Automatic Folder hierarchy, delimiting `filename` by `/`

@@ -30,7 +30,7 @@ __status__ = 'Development'
 __version__ = '0.1.0'
 
 try:
-    from fuse2 import FUSE, FuseOSError, Operations, LoggingMixIn, fuse_get_context
+    from fuse import FUSE, FuseOSError, Operations, LoggingMixIn, fuse_get_context
 except ImportError as ex:
     print('Failed to import fusepy library; install from github https://github.com/terencehonles/fusepy')
     exit(1)
@@ -65,7 +65,7 @@ class FuseGridFS(LoggingMixIn, Operations):
         path = self.fix_path(path)
         map_function = Code('''
         function () {
-            var re = /^%s(\w+)\//;
+            var re = /^%s([\w ]+)\//;
             emit(re(this.filename)[1], 1);
         }
         ''' % path)
@@ -75,7 +75,7 @@ class FuseGridFS(LoggingMixIn, Operations):
             return 1;
         }
         ''')
-        res = self.collection.files.map_reduce(map_function, reduce_function, out='dirs', query={'filename' : { '$regex' : '^{0}(\w+)\/'.format(path) }})
+        res = self.collection.files.map_reduce(map_function, reduce_function, out='dirs', query={'filename' : { '$regex' : '^{0}([\w ]+)\/'.format(path) }})
         if res.count() > 0:
             return [a['_id'] for a in res.find()]
         return []
@@ -84,7 +84,7 @@ class FuseGridFS(LoggingMixIn, Operations):
         path = self.fix_path(path)
         map_function = Code('''
         function () {
-            var re = /^%s(\w+(?:\.\w+)?)$/;
+            var re = /^%s([\w ]+(?:\.[\w ]+)?)$/;
             emit(re(this.filename)[1], 1);
         }
         ''' % path)
@@ -94,7 +94,7 @@ class FuseGridFS(LoggingMixIn, Operations):
             return 1;
         }
         ''')
-        res = self.collection.files.map_reduce(map_function, reduce_function, out='dirs', query={'filename' : { '$regex' : '^{0}(\w+(?:\.\w+)?)$'.format(path) }})
+        res = self.collection.files.map_reduce(map_function, reduce_function, out='dirs', query={'filename' : { '$regex' : '^{0}([\w ]+(?:\.[\w ]+)?)$'.format(path) }})
         if res.count() > 0:
             return [a['_id'] for a in res.find()]
         return []
@@ -157,4 +157,5 @@ if __name__ == '__main__':
         exit(1)
 
     a = FuseGridFS(argv[1], argv[2])
+
     fuse = FUSE(a, argv[3], foreground=True, ro=True, debug=False, volname='gridfs')

@@ -23,7 +23,7 @@ Dependencies
 ------------
 The following components must be installed prior to using gridfsfusepy
 
-* [FUSE for OSX](http://osxfuse.github.com/) or compatible library
+* [FUSE for OSX](http://osxfuse.github.com/) or [FUES for Linux](http://fuse.sourceforge.net/)
 * [fusepy](https://github.com/terencehonles/fusepy) Python bindings for fuse
 
 Usage
@@ -37,5 +37,10 @@ Usage
 
 Compatibility
 -------------
-gridfsfusepy and fusepy has been tested with [FUSE for OSX](http://osxfuse.github.com/) on Mountain Lion 10.8
+
+### OS X
+gridfsfusepy and fusepy has been tested with [FUSE for OSX](http://osxfuse.github.com/) on Mountain Lion 10.8.
+
+### Linux
+There is no reason gridfsfusepy shouldn't work on various Linux distros.  I'll update this space when it is confirmed.
 

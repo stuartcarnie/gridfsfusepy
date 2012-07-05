@@ -152,6 +152,39 @@ class FuseGridFS(LoggingMixIn, Operations):
     releasedir = None
     statfs = None
 
+    def rename_dir(self, old, new):
+        print('rename_dir: old=%s, new=%s' % (old, new))
+
+        search = self.fix_path(old)
+        res = self.collection.files.find({ 'filename' : { '$regex' : '^{0}'.format(search) } }, fields={ 'filename' : 1 } )
+        if not res.count():
+            return 0
+
+        new = self.fuse_to_mongo_path(new)
+        old = self.fuse_to_mongo_path(old)
+        old_len = len(old)
+
+        for a in res:
+            new_name = new + a['filename'][old_len:]
+            id = a['_id']
+            self.collection.files.update({ '_id' : id }, {'$set' : { 'filename' : new_name } })
+
+        return 0
+
+    def rename(self, old, new):
+        if self.is_dir(old):
+            return self.rename_dir(old, new)
+
+        file = self.get_mongo_file(old)
+        if not file:
+            raise FuseOSError(ENOENT)
+
+        new = self.fuse_to_mongo_path(new)
+        self.collection.files.update({ '_id' : file._id }, {'$set' : { 'filename' : new } })
+
+        return 0
+
+
 
 if __name__ == '__main__':
     if len(argv) != 4:
@@ -160,4 +193,4 @@ if __name__ == '__main__':
 
     a = FuseGridFS(argv[1], argv[2])
 
-    fuse = FUSE(a, argv[3], foreground=True, ro=True, debug=False, volname='gridfs')
+    fuse = FUSE(a, argv[3], foreground=True, debug=False, volname='gridfs')

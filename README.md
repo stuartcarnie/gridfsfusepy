@@ -47,7 +47,11 @@ There is no reason gridfsfusepy shouldn't work on various Linux distros.  I'll u
 Changelog
 ---------
 
-**0.1.0**: Initial release
+**0.02.0**:
+
+* Rename files and directories
+
+**0.01.0**: Initial release
 
 * Read-only support
 * Automatic Folder hierarchy, delimiting `filename` by `/`

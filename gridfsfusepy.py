@@ -27,7 +27,7 @@ __author__ = 'stuartcarnie'
 __copyright__ = 'Copyright 2012, Stuart Carnie'
 __license__ = 'MIT'
 __status__ = 'Development'
-__version__ = '0.1.0'
+__version__ = '0.02.0'
 
 try:
     from fuse import FUSE, FuseOSError, Operations, LoggingMixIn, fuse_get_context

@@ -43,11 +43,27 @@ from gridfs import GridFS
 from time import time
 import os
 from bson.code import Code
+from urlparse import urlparse
+from pymongo.errors import ConfigurationError
 
 class FuseGridFS(LoggingMixIn, Operations):
 
-    def __init__(self, db, collection):
-        cn = Connection()
+    def __init__(self, db_or_uri, collection=None):
+        if collection == None:
+            url = urlparse(db_or_uri)
+            if url.scheme != 'mongodb':
+                show_usage()
+
+            path = url.path
+            (db_path, collection) = os.path.split(path)
+            db = os.path.basename(db_path)
+
+            mongo_uri = ''.join([url[0], '://', url[1], db_path])
+        else:
+            db = db_or_uri
+            mongo_uri = ''
+
+        cn = Connection(mongo_uri)
         self.db = cn[db]
         self.collection = self.db[collection]
         self.gfs = GridFS(self.db, collection=collection)
@@ -185,12 +201,30 @@ class FuseGridFS(LoggingMixIn, Operations):
         return 0
 
 
+def show_usage():
+    print('''
+usage: %s [<dbname> <collection>|<mongo_uri>] <mountpoint>
+
+where:
+    mongo_uri      mongodb://user:pass@server:port/db/bucket
+    ''' % argv[0])
+    exit(1)
 
 if __name__ == '__main__':
-    if len(argv) != 4:
-        print('usage: %s <dbname> <collection> <mountpoint>' % argv[0])
+    argc = len(argv)
+    if argc != 3 and argc != 4:
+        show_usage()
+
+    try:
+        if argc == 4:
+            mount_point = argv[3]
+            a = FuseGridFS(argv[1], argv[2])
+        else:
+            mount_point = argv[2]
+            a = FuseGridFS(argv[1])
+
+        fuse = FUSE(a, mount_point, foreground=True, debug=False, volname='gridfs')
+
+    except ConfigurationError as ex:
+        print('ERROR: %s' % ex.message)
         exit(1)
-
-    a = FuseGridFS(argv[1], argv[2])
-
-    fuse = FUSE(a, argv[3], foreground=True, debug=False, volname='gridfs')

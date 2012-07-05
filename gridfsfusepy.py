@@ -116,12 +116,15 @@ class FuseGridFS(LoggingMixIn, Operations):
     def fuse_to_mongo_path(self, path):
         return path[1:] if path.startswith('/') else path
 
+    def get_mongo_file(self, path):
+        path = self.fuse_to_mongo_path(path)
+        return self.gfs.get_last_version(filename=path) if self.gfs.exists(filename=path) else None
+
     def getattr(self, path, fh=None):
         if path == '/' or self.is_dir(path):
             st = dict(st_mode=(S_IFDIR | 0755), st_nlink=2)
         else:
-            path = self.fuse_to_mongo_path(path)
-            file = self.gfs.get_last_version(filename=path) if self.gfs.exists(filename=path) else None
+            file = self.get_mongo_file(path)
             if file:
                 st = dict(st_mode=(S_IFREG | 0444), st_size=file.length)
             else:
@@ -131,8 +134,7 @@ class FuseGridFS(LoggingMixIn, Operations):
         return st
 
     def read(self, path, size, offset, fh):
-        path = self.fuse_to_mongo_path(path)
-        file = self.gfs.get_last_version(filename=path) if self.gfs.exists(filename=path) else None
+        file = self.get_mongo_file(path)
         if file:
             file.seek(offset, os.SEEK_SET)
             return file.read(size)

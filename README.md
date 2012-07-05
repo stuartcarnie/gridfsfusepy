@@ -42,7 +42,10 @@ Compatibility
 gridfsfusepy and fusepy has been tested with [FUSE for OSX](http://osxfuse.github.com/) on Mountain Lion 10.8.
 
 ### Linux
-There is no reason gridfsfusepy shouldn't work on various Linux distros.  I'll update this space when it is confirmed.
+
+gridfsfusepy has been tested with the following Linux distros:
+
+* Ubuntu 12.04
 
 Changelog
 ---------

@@ -100,7 +100,7 @@ class FuseGridFS(LoggingMixIn, Operations):
         path = self.fix_path(path)
         map_function = Code('''
         function () {
-            var re = /^%s([\w ]+(?:\.[\w ]+)?)$/;
+            var re = /^%s([\w ]+(?:\.[\w ]+)*)$/;
             emit(re(this.filename)[1], 1);
         }
         ''' % path)
@@ -110,7 +110,7 @@ class FuseGridFS(LoggingMixIn, Operations):
             return 1;
         }
         ''')
-        res = self.collection.files.map_reduce(map_function, reduce_function, out='dirs', query={'filename' : { '$regex' : '^{0}([\w ]+(?:\.[\w ]+)?)$'.format(path) }})
+        res = self.collection.files.map_reduce(map_function, reduce_function, out='dirs', query={'filename' : { '$regex' : '^{0}([\w ]+(?:\.[\w ]+)*)$'.format(path) }})
         if res.count() > 0:
             return [a['_id'] for a in res.find()]
         return []

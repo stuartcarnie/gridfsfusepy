@@ -23,7 +23,7 @@ Dependencies
 ------------
 The following components must be installed prior to using gridfsfusepy
 
-* [FUSE for OSX](http://osxfuse.github.com/) or [FUES for Linux](http://fuse.sourceforge.net/)
+* [FUSE for OSX](http://osxfuse.github.com/) or [FUSE for Linux](http://fuse.sourceforge.net/)
 * [fusepy](https://github.com/terencehonles/fusepy) Python bindings for fuse
 
 Usage

@@ -223,7 +223,10 @@ if __name__ == '__main__':
             mount_point = argv[2]
             a = FuseGridFS(argv[1])
 
-        fuse = FUSE(a, mount_point, foreground=True, debug=False, volname='gridfs')
+        if os.sys.platform == 'darwin':
+            fuse = FUSE(a, mount_point, foreground=True, debug=False, volname='gridfs')
+        else:
+            fuse = FUSE(a, mount_point, foreground=True, debug=False)
 
     except ConfigurationError as ex:
         print('ERROR: %s' % ex.message)
